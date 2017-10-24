@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Typescript.Definitions.Tools2": {
+      "commandName": "Project",
+      "commandLineArgs": "-p F:\\prog\\amberoad.de\\asp\\site\\site --no-build"
+    }
+  }
+}

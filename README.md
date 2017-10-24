@@ -1,12 +1,9 @@
-# ABANDONED
+# Typescript.Definitions.Tools2
 
-I have decided to abandon this project. I recently came across the [Typewriter project](https://frhagn.github.io/Typewriter/) which with a little work can spit out definition files exactly the same as TypeLITE. It has support for VS2017 and has worked for me for all my needs. I've even been able to get it to generate api classes for each asp.net controller action available which is where I wanted this project to eventually get to. 
+A helper library to generate typescript definition files and typescript files from c# code specifically .NET Core 2.0 Web applications.
 
-# Typescript.Definitions.Tools
-
-This is currently a Work in Progress....
-
-A helper library to generate typescript definition files and typescript files from c# code specifically .NET Core Web applications.
+This is a fork from [this](https://github.com/originalmoose/Typescript.Definitions.Tools) project, originally developed by [originalmoose](https://github.com/originalmoose).
+Updated from .NET Core 1.0 to .NET Core 2.0.
 
 This project took much of its inspiration from TypeLITE and the EntityFramework Core Tools project.
 
@@ -14,30 +11,23 @@ This project took much of its inspiration from TypeLITE and the EntityFramework 
 
 [EntityFrameworkCore](https://github.com/aspnet/EntityFramework)
 
-# Installation NetCore 1.0
+# Installation
 
-After creating a new .Net core 1.0 application add the following to dependecies and tools in `project.json`
+After creating a new .Net core 2.0 application add the following to dependecies and tools in `.csproj`
     
-    "Typescript.Definitions.Tools": "1.0.1"
+    <PackageReference Include="Typescript.Definitions.Tools2" Version="2.0.0" />
 
-Add the following method to `Startup.cs`
+and
 
-    public void ConfigureDefinitions(IDefinitionBuilder definitonBuilder)
-    {
-    	/* Configure definitions here. */
-    }
-    
-# Installation NetCore 1.1
+    <DotNetCliToolReference Include="Typescript.Definitions.Tools2" Version="2.0.0" />
 
-After creating a new .Net core 1.1 application add the following to dependecies and tools in `project.json`
-    
-    "Typescript.Definitions.Tools": "1.1.0-preview1-final"
+After modifying the `.csproj` file, execute the command `dotnet restore`
 
 Create a new class and have it implement `ITypedef`, example below.
 
     public class Typedef : ITypedef
     {
-        public void Configure(IDefinitionBuilder builder)
+        public void Configure(IDefinitionBuilder definitionBuilder)
         {
         	/* Configure definitions here. */
         }
@@ -55,20 +45,20 @@ Inside the ConfigureDefinitions method you can create any number of definiton fi
                   .Filename(definitionFilename: "differentDefinitionName", constantsFilename: "differentConstantsName") 
                   //Use the following method to change the outdir of the definition files, NOT YET IMPLEMENTED/TESTED MAY NOT WORK
                   .OutDir("C:\\SomeOtherDir")
-                  )
+        )
 
 Most of the methods are exactly the same as you would use in TypeLite. The only difference is the filename method, outdir method, and an optional parameter on the `For` methods that allows you to configure the type. Typelite had you chaining off the `For` to modify the type you just added it but I found the syntax for that to be confusing to read.
 
 Assembly scanning works off of attributes, they are exactly the same (and should work the same) as TypeLite.
 
-# Generating Definitions
-
 Once your project startup file is configured you can have the tool generate the definition files in one of two ways.
 
 Manually execute the following from a cmd line in the Project Directory.
     
-    dotnet tsd
+    dotnet tsd2
 
-Add the following to the scripts section of `project.json` (this should regenerate the definitions after each successful build)
+Add the following to the `Target` section of `.csproj` (this should regenerate the definitions after each successful build)
 
-    "postcompile": [ "dotnet tsd --no-build" ]
+        <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+            <Exec Command="dotnet tsd2 --no-build" />
+        </Target>
